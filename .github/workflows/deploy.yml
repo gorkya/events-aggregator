@@ -33,6 +33,7 @@ jobs:
           POSTGRES_USERNAME: test
           POSTGRES_PASSWORD: test
           EVENTS_PROVIDER_API_KEY: test
+          EVENTS_PROVIDER_URL: http://localhost
 
   build:
     needs: lint

@@ -13,6 +13,7 @@ from src.core.db import engine
 from src.workers.sync import SyncRunner, run_periodically
 
 logging.basicConfig(level=logging.INFO)
+logging.getLogger("httpx").setLevel(logging.WARNING)
 
 
 @asynccontextmanager

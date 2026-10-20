@@ -76,6 +76,7 @@ class SyncEventsUsecase:
                 if len(batch) >= BATCH_SIZE:
                     await self._events.upsert_many(batch)
                     total += len(batch)
+                    logger.info("Saved %d events so far", total)
                     batch = []
             if batch:
                 await self._events.upsert_many(batch)
