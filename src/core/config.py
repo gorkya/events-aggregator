@@ -11,6 +11,9 @@ class Settings(BaseSettings):
     postgres_username: str
     postgres_password: str
 
+    events_provider_url: str
+    events_provider_api_key: str
+
     @property
     def database_url(self) -> URL:
         return URL.create(

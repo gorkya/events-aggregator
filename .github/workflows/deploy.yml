@@ -32,6 +32,7 @@ jobs:
           POSTGRES_DATABASE_NAME: test
           POSTGRES_USERNAME: test
           POSTGRES_PASSWORD: test
+          EVENTS_PROVIDER_API_KEY: test
 
   build:
     needs: lint
