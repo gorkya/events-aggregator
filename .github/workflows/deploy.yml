@@ -27,6 +27,9 @@ jobs:
       - name: Tests
         run: uv run pytest
         env:
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: "5432"
+          POSTGRES_DATABASE_NAME: test
           POSTGRES_USERNAME: test
           POSTGRES_PASSWORD: test
 
