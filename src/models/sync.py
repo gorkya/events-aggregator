@@ -17,4 +17,3 @@ class SyncMetadata(Base):
         DateTime(timezone=True), nullable=True
     )
     sync_status: Mapped[str] = mapped_column(String(32), default="never")
-    

@@ -22,12 +22,8 @@ class Event(Base):
     id: Mapped[str] = mapped_column(String(64), primary_key=True)
     name: Mapped[str] = mapped_column(String(255))
     place_id: Mapped[str] = mapped_column(ForeignKey("places.id"))
-    event_time: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), index=True
-    )
-    registration_deadline: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True)
-    )
+    event_time: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
+    registration_deadline: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     status: Mapped[str] = mapped_column(String(32))
     number_of_visitors: Mapped[int] = mapped_column(default=0)
     changed_at: Mapped[datetime | None] = mapped_column(
@@ -35,4 +31,3 @@ class Event(Base):
     )
 
     place: Mapped[Place] = relationship(lazy="joined")
-    
