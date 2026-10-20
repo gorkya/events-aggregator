@@ -41,5 +41,10 @@ class EventsProviderClient:
             next_cursor=_extract_cursor(data["next"]),
         )
 
+    async def seats(self, event_id: str) -> list[str]:
+        response = await self._client.get(f"/api/events/{event_id}/seats/")
+        response.raise_for_status()
+        return response.json()["seats"]
+
     async def aclose(self) -> None:
         await self._client.aclose()

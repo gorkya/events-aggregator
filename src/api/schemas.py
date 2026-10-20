@@ -37,3 +37,8 @@ class EventsListOut(BaseModel):
     next: str | None
     previous: str | None
     results: list[EventOut]
+
+
+class SeatsOut(BaseModel):
+    event_id: str
+    available_seats: list[str]

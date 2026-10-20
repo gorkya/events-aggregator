@@ -68,3 +68,13 @@ async def test_events_http_error_propagates(client):
     with patch.object(client._client, "get", mock_get):
         with pytest.raises(httpx.HTTPStatusError):
             await client.events("2000-01-01")
+
+
+@pytest.mark.anyio
+async def test_seats(client):
+    mock_get = AsyncMock(return_value=make_response({"seats": ["A1", "A3"]}))
+    with patch.object(client._client, "get", mock_get):
+        seats = await client.seats("e1")
+
+    mock_get.assert_awaited_once_with("/api/events/e1/seats/")
+    assert seats == ["A1", "A3"]

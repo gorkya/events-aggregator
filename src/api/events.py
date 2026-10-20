@@ -3,10 +3,15 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 
-from src.api.deps import get_get_event_usecase, get_list_events_usecase
-from src.api.schemas import EventDetailOut, EventOut, EventsListOut
-from src.domain import EventNotFound
+from src.api.deps import (
+    get_get_event_usecase,
+    get_get_seats_usecase,
+    get_list_events_usecase,
+)
+from src.api.schemas import EventDetailOut, EventOut, EventsListOut, SeatsOut
+from src.domain import EventNotFound, EventUnexpectedStatus
 from src.usecases.get_events import GetEventUsecase, ListEventsUsecase
+from src.usecases.get_seats import GetSeatsUsecase
 
 router = APIRouter(prefix="/events", tags=["events"])
 
@@ -46,3 +51,17 @@ async def get_event(
     except EventNotFound:
         raise HTTPException(status_code=404, detail="Event not found") from None
     return EventDetailOut.model_validate(event)
+
+
+@router.get("/{event_id}/seats", response_model=SeatsOut)
+async def get_seats(
+    event_id: str,
+    usecase: Annotated[GetSeatsUsecase, Depends(get_get_seats_usecase)],
+) -> SeatsOut:
+    try:
+        seats = await usecase.do(event_id)
+    except EventNotFound:
+        raise HTTPException(status_code=404, detail="Event not found") from None
+    except EventUnexpectedStatus:
+        raise HTTPException(status_code=400, detail="Event is not published") from None
+    return SeatsOut(event_id=event_id, available_seats=seats)

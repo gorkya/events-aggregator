@@ -32,3 +32,10 @@ class SyncState:
 
 class EventNotFound(Exception):
     pass
+
+
+PUBLISHED = "published"
+
+
+class EventUnexpectedStatus(Exception):
+    pass
