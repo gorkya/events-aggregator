@@ -28,3 +28,7 @@ class SyncState:
     last_sync_time: datetime | None = None
     last_changed_at: datetime | None = None
     sync_status: str = "never"
+
+
+class EventNotFound(Exception):
+    pass
