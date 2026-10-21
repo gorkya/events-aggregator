@@ -4,6 +4,7 @@ import httpx
 import pytest
 
 from src.clients.events_provider import EventsProviderClient
+from src.domain import RequestRejected
 
 
 def make_response(data: dict) -> MagicMock:
@@ -78,3 +79,49 @@ async def test_seats(client):
 
     mock_get.assert_awaited_once_with("/api/events/e1/seats/")
     assert seats == ["A1", "A3"]
+
+
+@pytest.mark.anyio
+async def test_register(client):
+    response = make_response({"ticket_id": "t1"})
+    response.status_code = 201
+    mock_post = AsyncMock(return_value=response)
+    with patch.object(client._client, "post", mock_post):
+        ticket_id = await client.register(
+            "e1", "Ivan", "Ivanov", "ivan@example.com", "A5"
+        )
+
+    assert ticket_id == "t1"
+    mock_post.assert_awaited_once_with(
+        "/api/events/e1/register/",
+        json={
+            "first_name": "Ivan",
+            "last_name": "Ivanov",
+            "seat": "A5",
+            "email": "ivan@example.com",
+        },
+    )
+
+
+@pytest.mark.anyio
+async def test_register_rejected_by_provider(client):
+    response = make_response({})
+    response.status_code = 400
+    response.text = '["This ticket is not available (already sold)."]'
+    mock_post = AsyncMock(return_value=response)
+    with patch.object(client._client, "post", mock_post):
+        with pytest.raises(RequestRejected):
+            await client.register("e1", "Ivan", "Ivanov", "ivan@example.com", "A5")
+
+
+@pytest.mark.anyio
+async def test_unregister(client):
+    response = make_response({"success": True})
+    response.status_code = 200
+    mock_request = AsyncMock(return_value=response)
+    with patch.object(client._client, "request", mock_request):
+        await client.unregister("e1", "t1")
+
+    mock_request.assert_awaited_once_with(
+        "DELETE", "/api/events/e1/unregister/", json={"ticket_id": "t1"}
+    )

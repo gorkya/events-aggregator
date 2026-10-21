@@ -37,5 +37,35 @@ class EventNotFound(Exception):
 PUBLISHED = "published"
 
 
-class EventUnexpectedStatus(Exception):
+@dataclass(frozen=True)
+class TicketData:
+    id: str
+    event_id: str
+    first_name: str
+    last_name: str
+    email: str
+    seat: str
+
+
+class TicketNotFound(Exception):
     pass
+
+
+class BusinessRuleViolation(Exception):
+    """Нарушено бизнес-правило, клиенту уходит 400."""
+
+
+class EventUnexpectedStatus(BusinessRuleViolation):
+    pass
+
+
+class RegistrationClosed(BusinessRuleViolation):
+    pass
+
+
+class InvalidSeat(BusinessRuleViolation):
+    pass
+
+
+class RequestRejected(BusinessRuleViolation):
+    """Провайдер отклонил запрос (400), например место уже занято."""

@@ -10,6 +10,7 @@ from sqlalchemy import text
 from src.api.events import router as events_router
 from src.api.health import router as health_router
 from src.api.sync import router as sync_router
+from src.api.tickets import router as tickets_router
 from src.clients.events_provider import EventsProviderClient
 from src.core.cache import TTLCache
 from src.core.config import settings
@@ -52,6 +53,7 @@ app = FastAPI(title="Events Aggregator", lifespan=lifespan)
 app.include_router(health_router, prefix="/api")
 app.include_router(sync_router, prefix="/api")
 app.include_router(events_router, prefix="/api")
+app.include_router(tickets_router, prefix="/api")
 
 
 @app.exception_handler(httpx.HTTPError)

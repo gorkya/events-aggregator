@@ -8,8 +8,10 @@ from src.clients.events_provider import EventsProviderClient
 from src.core.cache import TTLCache
 from src.core.db import session_factory
 from src.repositories.events import EventRepository
+from src.repositories.tickets import TicketRepository
 from src.usecases.get_events import GetEventUsecase, ListEventsUsecase
 from src.usecases.get_seats import GetSeatsUsecase
+from src.usecases.tickets import CancelTicketUsecase, CreateTicketUsecase
 
 
 async def get_session() -> AsyncIterator[AsyncSession]:
@@ -42,3 +44,21 @@ def get_get_seats_usecase(
     cache: Annotated[TTLCache[list[str]], Depends(get_seats_cache)],
 ) -> GetSeatsUsecase:
     return GetSeatsUsecase(client, EventRepository(session), cache)
+
+
+def get_create_ticket_usecase(
+    session: SessionDep,
+    client: Annotated[EventsProviderClient, Depends(get_events_client)],
+    cache: Annotated[TTLCache[list[str]], Depends(get_seats_cache)],
+) -> CreateTicketUsecase:
+    return CreateTicketUsecase(
+        client, EventRepository(session), TicketRepository(session), cache
+    )
+
+
+def get_cancel_ticket_usecase(
+    session: SessionDep,
+    client: Annotated[EventsProviderClient, Depends(get_events_client)],
+    cache: Annotated[TTLCache[list[str]], Depends(get_seats_cache)],
+) -> CancelTicketUsecase:
+    return CancelTicketUsecase(client, TicketRepository(session), cache)
