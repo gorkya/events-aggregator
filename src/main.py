@@ -4,6 +4,8 @@ from contextlib import asynccontextmanager, suppress
 
 import httpx
 from fastapi import FastAPI, Request
+from fastapi.encoders import jsonable_encoder
+from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
 
@@ -63,4 +65,13 @@ async def provider_error_handler(
     logger.error("Events provider error: %r", exc)
     return JSONResponse(
         status_code=502, content={"detail": "Events provider unavailable"}
+    )
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_error_handler(
+    request: Request, exc: RequestValidationError
+) -> JSONResponse:
+    return JSONResponse(
+        status_code=400, content={"detail": jsonable_encoder(exc.errors())}
     )

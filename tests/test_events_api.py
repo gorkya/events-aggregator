@@ -52,7 +52,7 @@ def test_list_events_last_page_has_no_next():
 def test_list_events_rejects_invalid_page():
     response = client.get("/api/events?page=0")
 
-    assert response.status_code == 422
+    assert response.status_code == 400
 
 
 def test_get_event_not_found_returns_404():

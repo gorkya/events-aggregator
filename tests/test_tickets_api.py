@@ -39,20 +39,20 @@ def test_create_ticket_returns_201():
     assert response.json() == {"ticket_id": "t1"}
 
 
-def test_create_ticket_invalid_email_returns_422():
+def test_create_ticket_invalid_email_returns_400():
     override(get_create_ticket_usecase, return_value="t1")
 
     response = client.post("/api/tickets", json={**VALID_BODY, "email": "nope"})
 
-    assert response.status_code == 422
+    assert response.status_code == 400
 
 
-def test_create_ticket_invalid_seat_format_returns_422():
+def test_create_ticket_invalid_seat_format_returns_400():
     override(get_create_ticket_usecase, return_value="t1")
 
     response = client.post("/api/tickets", json={**VALID_BODY, "seat": "15"})
 
-    assert response.status_code == 422
+    assert response.status_code == 400
 
 
 def test_create_ticket_event_not_found_returns_404():
